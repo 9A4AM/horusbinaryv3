@@ -110,7 +110,6 @@ def _(editor):
         data = exec_data['data']
     except:
         exec(editor.value)
-
     return (data,)
 
 
@@ -126,9 +125,10 @@ def _(HorusBinaryV3, data, mo):
 def _(mo, output):
     mo.md(
         f"""
-    ```
-    {output.hex()}
-    ```
+    |    |    |
+    | -- | -- |
+    | <p align="left"> **Payload data** </p> | `{output.hex()}` |
+    | <p align="left"> **Payload bytes** </p> | <p align="left"> {len(output)} </p> |
     """
     )
     return
