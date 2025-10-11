@@ -85,7 +85,7 @@ Telemetry ::= SEQUENCE {
 
     -- additional but fairly common fields so we make them explicit
     temperatureCelsius         [12] EXPLICIT TemperatureSensors   OPTIONAL, -- C
-    humidityPercentage         [13] EXPLICIT SEQUENCE(SIZE(1..8)) OF INTEGER (0..100)     OPTIONAL, -- %
+    humidityPercentage         [13] EXPLICIT SEQUENCE(SIZE(1..4)) OF INTEGER (0..100)     OPTIONAL, -- %
     milliVolts                 [14] EXPLICIT MilliVoltSensors     OPTIONAL, -- 
     counts                     [15] EXPLICIT SEQUENCE(SIZE(1..8)) OF INTEGER OPTIONAL,
     

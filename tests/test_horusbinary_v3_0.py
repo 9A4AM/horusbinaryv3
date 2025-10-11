@@ -32,7 +32,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
                 "other5": -127,
                 "other6": 127
             },
-            "humidityPercentage":[0,100,0,100,0,100,0,100],
+            "humidityPercentage":[0,100,0,100],
             "milliVolts": {
                 "battery": 0,
                 "solar": 16383,
@@ -96,7 +96,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
                 "other5": -127,
                 "other6": 127
             },
-            "humidityPercentage":[0,100,0,100,0,100,0,100],
+            "humidityPercentage":[0,100,0,100],
             "milliVolts": {
                 "battery": 0,
                 "solar": 16383,
@@ -229,7 +229,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
                 "other5": -127,
                 "other6": 127
             },
-            "humidityPercentage":[0,100,0,100,0,100,0,100],
+            "humidityPercentage":[0,100,0,100],
             "milliVolts": {
                 "battery": 0,
                 "solar": 16383,
@@ -264,7 +264,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
                 }
             ],
         }
-        decoded = self.uper.decode("Telemetry", bytes.fromhex("7fff4b34e71e8000841892cd381ffff51810380012d03c0022dc738f9a462a488314918a9220c52462a48832808080816535c5c2085ffd06c81124509952c50a962e18388101c4ab7ab963568b1eae62d84c0640fcb923a29c77984c000811833c3eeadce84c0640fcb923a29c77984c000811833c3eeadce9ffffffe0fffe01fc01fc01fc01fdc06401900640193fc000fffc000fffc000fffc000ffff008080b20101f40113880180c3500187a1200187a1205"))
+        decoded = self.uper.decode("Telemetry", bytes.fromhex("7fff4b34e71e8000841892cd381ffff51810380012d03c0022dc738f9a462a488314918a9220c52462a48832808080816535c5c2085ffd06c81124509952c50a962e18388101c4ab7ab963568b1eae62d84c0640fcb923a29c77984c000811833c3eeadce84c0640fcb923a29c77984c000811833c3eeadce9ffffffe0fffe01fc01fc01fc01fd80c80327f8001fff8001fff8001fff8001fffe010101640203e8022710030186a0030f4240030f4240a0"))
 
         self.assertDictEqual(data, decoded)
 

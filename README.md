@@ -56,7 +56,7 @@ This fields are required to be transmitted/encoded
 These fields are optional, and store only a single value.
 | Field Name | Constraint | Description |
 | -- | -- | -- |
-| velocityHorizontalMetersPerSecond | 0-255 | Horizontal velocity in m/s|
+| velocityHorizontalKilometersPerHour | 0-512 | Horizontal velocity in m/s|
 | ascentRateCentimetersPerSecond | -32767 - 32767 | Ascent rate in centimeters per second. Centimeters is used here to avoid using a REAL which takes up 2 bytes. |
 | gnssSatellitesVisible | 0 - 31 | Number of satellites the payload can see. This figure should not roll over. |
 | pressurehPa | 0 - 1200 | Atmospheric pressure in hPa |
@@ -66,7 +66,7 @@ These fields are optional, and store only a single value.
 | gpsLock | `true`/`false` | GPS is locked / not locked |
 
 #### Built-in Multi Value Fields
-Each of these fields can have up to 8 values. When sending multiple values, ensure that the values remain in order/index.
+Each of these fields can have several values. When sending multiple values, ensure that the values remain in order/index. Additional values can use the extraSensors feature.
 
 | Field Name | Sub Field name| Constraint | Description |
 | -- | -- | -- | -- |
@@ -79,7 +79,7 @@ Each of these fields can have up to 8 values. When sending multiple values, ensu
 | -                  | other4  | -127 - 127 | Sensor temperature in Celsius |
 | -                  | other5  | -127 - 127 | Sensor temperature in Celsius |
 | -                  | other6  | -127 - 127 | Sensor temperature in Celsius |
-| humidityPercentage | 0 - 100 | Humidity in percentage |
+| humidityPercentage (max 4) | 0 - 100 | Humidity in percentage |
 | milliVolts | |
 | -          | battery | 0 - 16383 | Voltage in milliVolts |
 | -          | solar | 0 - 16383 | Voltage in milliVolts |
@@ -89,7 +89,7 @@ Each of these fields can have up to 8 values. When sending multiple values, ensu
 | -          | other3 | 0 - 16383 | Voltage in milliVolts |
 | -          | other4 | 0 - 16383 | Voltage in milliVolts |
 | -          | other5 | 0 - 16383 | Voltage in milliVolts |
-| counts | Integer (unbounded) | Something that needs counting, like a radiation sensor |
+| counts (max 8) | Integer (unbounded) | Something that needs counting, like a radiation sensor |
 
 #### Custom sensors (extraSensors)
 Up to four additional sensor types can be configured. Each additional sensor type can have the following values:
