@@ -58,7 +58,7 @@ Telemetry ::= SEQUENCE {
     gnssSatellitesVisible               [9] EXPLICIT INTEGER (0..31)     OPTIONAL, -- note that the
                                                   -- power mode can now be expressed in bits below
     ascentRateCentimetersPerSecond     [10] EXPLICIT INTEGER (-32767..32767)                    OPTIONAL, -- cm/s
-    pressurekPa                        [11] EXPLICIT INTEGER (0..127)     OPTIONAL, -- kPa
+    pressurehPa                        [11] EXPLICIT INTEGER (0..1200)     OPTIONAL, -- hPa
 
 
     -- additional but fairly common fields so we make them explicit

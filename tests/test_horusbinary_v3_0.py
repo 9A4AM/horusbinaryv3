@@ -20,7 +20,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
             "velocityHorizontalMetersPerSecond": 255,
             "gnssSatellitesVisible": 31,
             "ascentRateCentimetersPerSecond": 32767,
-            "pressurekPa": 127,
+            "pressurehPa": 127,
             "temperatureCelsius": [-127,127,-127,127,-127,127,-127,127],
             "humidityPercentage":[0,100,0,100,0,100,0,100],
             "milliVolts": [0,16383,0,16383,0,16383,0,16383],
@@ -66,7 +66,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
             "velocityHorizontalMetersPerSecond": 255,
             "gnssSatellitesVisible": 31,
             "ascentRateCentimetersPerSecond": 32767,
-            "pressurekPa": 127,
+            "pressurehPa": 127,
             "temperatureCelsius": [-127,127,-127,127,-127,127,-127,127],
             "humidityPercentage":[0,100,0,100,0,100,0,100],
             "milliVolts": [0,16383,0,16383,0,16383,0,16383],
@@ -181,7 +181,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
             "velocityHorizontalMetersPerSecond": 255,
             "gnssSatellitesVisible": 31,
             "ascentRateCentimetersPerSecond": 32767,
-            "pressurekPa": 127,
+            "pressurehPa": 127,
             "temperatureCelsius": [-127,127,-127,127,-127,127,-127,127],
             "humidityPercentage":[0,100,0,100,0,100,0,100],
             "milliVolts": [0,16383,0,16383,0,16383,0,16383],
@@ -209,7 +209,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
                 }
             ],
         }
-        decoded = self.uper.decode("Telemetry", bytes.fromhex("7fff4b34e71e8000841892cd381ffff51810380012d03c0022dc738f9a462a488314918a9220c52462a48832808080816535c5c2085ffd06c81124509952c50a962e18388101c4ab7ab963568b1eae62d84c0640fcb923a29c77984c000811833c3eeadce84c0640fcb923a29c77984c000811833c3eeadcefffffffbff00fe00fe00fe00fee03200c803200c9c000fffc000fffc000fffc000ffff008080b20101f40113880180c3500187a1200187a1205"))
+        decoded = self.uper.decode("Telemetry", bytes.fromhex("7fff4b34e71e8000841892cd381ffff51810380012d03c0022dc738f9a462a488314918a9220c52462a48832808080816535c5c2085ffd06c81124509952c50a962e18388101c4ab7ab963568b1eae62d84c0640fcb923a29c77984c000811833c3eeadce84c0640fcb923a29c77984c000811833c3eeadcefffffff83ff00fe00fe00fe00fee03200c803200c9c000fffc000fffc000fffc000ffff008080b20101f40113880180c3500187a1200187a12050"))
 
         self.assertDictEqual(data, decoded)
 
@@ -233,7 +233,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
                 "milliVolts": [int(data['batt']*1000)],
                 "humidityPercentage": [data['ext_humidity']],
                 "ascentRateCentimetersPerSecond": int(data["ascent_rate"]*100),
-                "pressurekPa": int(data['ext_pressure'])
+                "pressurehPa": int(data['ext_pressure'])
             }
             encoded = self.uper.encode("Telemetry",to_encode)
             if len(encoded) > max_length:
