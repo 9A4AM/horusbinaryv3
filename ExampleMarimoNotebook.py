@@ -14,11 +14,13 @@ def _():
 
 
 @app.cell(hide_code=True)
-async def _(micropip):
+async def _(micropip, mo):
 
     await micropip.install("asn1tools")
     await micropip.install("wcwidth")
+    await micropip.install(str(mo.notebook_location() / "public" / "blockdiag-3.3.0-py3-none-any.whl" ))
     await micropip.install("sqlite3")
+    await micropip.install("nwdiag")
     return
 
 
@@ -29,7 +31,8 @@ def _(mo):
         ASN1_DEF = requests.get(str(mo.notebook_location() / "public" / "HorusBinaryV3.asn1" )).text
     except:
         ASN1_DEF = open(str(mo.notebook_location() / "public" / "HorusBinaryV3.asn1"),"r").read()
-    return (ASN1_DEF,)
+    from packetdiag import parser, builder, drawer
+    return ASN1_DEF, builder, drawer, parser
 
 
 @app.cell(hide_code=True)
@@ -56,7 +59,7 @@ def _(ASN1_DEF, mo):
     import asn1tools
     HorusBinaryV3 = asn1tools.compile_string(ASN1_DEF, codec="uper")
     mo.show_code()
-    return (HorusBinaryV3,)
+    return HorusBinaryV3, asn1tools
 
 
 @app.cell
@@ -134,8 +137,100 @@ def _(mo, output):
     | -- | -- |
     | <p align="left"> **Payload data** </p> | `{output.hex()}` |
     | <p align="left"> **Payload bytes** </p> | <p align="left"> {len(output)} </p> |
+
+    ### Packet layout
     """
     )
+    return
+
+
+@app.cell(hide_code=True)
+def _(HorusBinaryV3, asn1tools, builder, data, drawer, mo, parser):
+    import inspect
+    class VizEncoder(asn1tools.codecs.uper.Encoder):
+        def __init__(self, *args, **kwargs):
+            self.map = []
+            self.last_frame = None
+            super().__init__(*args, **kwargs)
+
+        def inspect(self):
+            frame = inspect.currentframe()
+            calling_frame=frame.f_back.f_back.f_locals
+            try:
+                label = calling_frame['self'].type_label()
+            except:
+                label = f"{calling_frame['self'].name} ({calling_frame['self'].type_name})"
+
+            if inspect.stack()[2] != self.last_frame:
+                self.last_frame=inspect.stack()[2]
+                if len(self.map)>0:
+                    self.map[-1]["end"] = self.number_of_bits-1
+                    self.map.append({
+                        "label": label,
+                        "start": self.number_of_bits
+                    })
+                else:
+                    self.map.append({
+                        "label": label,
+                        "start": 0
+                    })
+
+
+            # after_bits = self.number_of_bits
+            # print(f"{label} {current_bits}:{after_bits}")
+
+        def append_bit(self, *args, **kwargs):        
+            self.inspect()
+            super().append_bit(*args, **kwargs)
+
+
+        def append_non_negative_binary_integer(self, *args, **kwargs):
+            frame = inspect.currentframe()
+            calling_frame=frame.f_back.f_locals
+            if type(frame.f_back.f_locals['self']) != VizEncoder:
+                self.inspect()
+                super().append_non_negative_binary_integer(*args, **kwargs)
+
+        def as_bytearray(self, *args, **kwargs):
+            if len(self.map)>0:
+                    self.map[-1]["end"] = self.number_of_bits-1
+            return super().as_bytearray(*args, **kwargs)
+
+
+
+    encoderviz = VizEncoder()
+    HorusBinaryV3._types['Telemetry']._type.encode(data,encoderviz)
+    output_viz = encoderviz.as_bytearray()
+
+    lines = """
+    {
+      colwidth = 32
+      node_height = 80
+      node_width = 38
+
+    """
+
+
+    for x in encoderviz.map:
+        label = x['label'].replace("(",' \\n(')
+        output_viz_bytes = output_viz[x['start']//8:x['end']//8+1]
+        bin_data = "".join([format(x,'08b') for x in output_viz_bytes])
+        offset = x['start'] % 8
+        end_offset = 7-(x['end'] % 8)
+        lines += f"  {x['start']}-{x['end']}: {label}\\n\\n\\n\\n\\n\\n{bin_data[offset:-end_offset]}\n"
+    lines += """
+    }
+    """
+
+    tree = parser.parse_string(lines)
+    diagram = builder.ScreenNodeBuilder(tree)
+
+    draw = drawer.DiagramDraw("SVG", diagram.build(tree),
+                                      ignore_pil=True)
+    draw.draw()
+    import base64
+    output_64 = base64.b64encode(draw.save().encode()).decode()
+    mo.image(src=f"data:image/svg+xml;base64,{output_64}")
     return
 
 

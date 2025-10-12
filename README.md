@@ -74,22 +74,14 @@ Each of these fields can have several values. When sending multiple values, ensu
 | temperatureCelsius |  |  |
 | -                  | internal | -127 - 127 | Sensor temperature in Celsius |
 | -                  | external | -127 - 127 | Sensor temperature in Celsius |
-| -                  | other1  | -127 - 127 | Sensor temperature in Celsius |
-| -                  | other2  | -127 - 127 | Sensor temperature in Celsius |
-| -                  | other3  | -127 - 127 | Sensor temperature in Celsius |
-| -                  | other4  | -127 - 127 | Sensor temperature in Celsius |
-| -                  | other5  | -127 - 127 | Sensor temperature in Celsius |
-| -                  | other6  | -127 - 127 | Sensor temperature in Celsius |
+| -                  | custom1  | -127 - 127 | Sensor temperature in Celsius |
+| -                  | custom2  | -127 - 127 | Sensor temperature in Celsius |
 | humidityPercentage (max 4) | 0 - 100 | Humidity in percentage |
 | milliVolts | |
 | -          | battery | 0 - 16383 | Voltage in milliVolts |
 | -          | solar | 0 - 16383 | Voltage in milliVolts |
-| -          | payload | 0 - 16383 | Voltage in milliVolts |
-| -          | other1 | 0 - 16383 | Voltage in milliVolts |
-| -          | other2 | 0 - 16383 | Voltage in milliVolts |
-| -          | other3 | 0 - 16383 | Voltage in milliVolts |
-| -          | other4 | 0 - 16383 | Voltage in milliVolts |
-| -          | other5 | 0 - 16383 | Voltage in milliVolts |
+| -          | custom1 | 0 - 16383 | Voltage in milliVolts |
+| -          | custom2 | 0 - 16383 | Voltage in milliVolts |
 | counts (max 8) | Integer (unbounded) | Something that needs counting, like a radiation sensor |
 
 #### Custom sensors (extraSensors)

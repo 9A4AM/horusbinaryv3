@@ -25,23 +25,16 @@ class TestHorusBinaryV3_0(unittest.TestCase):
             "temperatureCelsius": {
                 "internal": -127,
                 "external": 127,
-                "other1": -127,
-                "other2": 127,
-                "other3": -127,
-                "other4": 127,
-                "other5": -127,
-                "other6": 127
+                "custom1": -127,
+                "custom2": 127,
+                
             },
             "humidityPercentage":[0,100,0,100],
             "milliVolts": {
                 "battery": 0,
                 "solar": 16383,
-                "payload": 0,
-                "other1": 16383,
-                "other2": 0,
-                "other3": 16383,
-                "other4": 0,
-                "other5": 16383
+                "custom1": 0,
+                "custom2": 16383,
                 },
             "counts": [1,100,1000,10000,100000,1000000,1000000],
             "safeMode": True,
@@ -89,23 +82,16 @@ class TestHorusBinaryV3_0(unittest.TestCase):
             "temperatureCelsius": {
                 "internal": -127,
                 "external": 127,
-                "other1": -127,
-                "other2": 127,
-                "other3": -127,
-                "other4": 127,
-                "other5": -127,
-                "other6": 127
+                "custom1": -127,
+                "custom2": 127,
+                
             },
             "humidityPercentage":[0,100,0,100],
             "milliVolts": {
                 "battery": 0,
                 "solar": 16383,
-                "payload": 0,
-                "other1": 16383,
-                "other2": 0,
-                "other3": 16383,
-                "other4": 0,
-                "other5": 16383
+                "custom1": 0,
+                "custom2": 16383,
                 },
             "counts": [1,100,1000,10000,100000,1000000,1000000],
             "safeMode": True,
@@ -222,23 +208,16 @@ class TestHorusBinaryV3_0(unittest.TestCase):
             "temperatureCelsius": {
                 "internal": -127,
                 "external": 127,
-                "other1": -127,
-                "other2": 127,
-                "other3": -127,
-                "other4": 127,
-                "other5": -127,
-                "other6": 127
+                "custom1": -127,
+                "custom2": 127,
+                
             },
             "humidityPercentage":[0,100,0,100],
             "milliVolts": {
                 "battery": 0,
                 "solar": 16383,
-                "payload": 0,
-                "other1": 16383,
-                "other2": 0,
-                "other3": 16383,
-                "other4": 0,
-                "other5": 16383
+                "custom1": 0,
+                "custom2": 16383,
                 },
             "counts": [1,100,1000,10000,100000,1000000,1000000],
             "safeMode": True,
@@ -265,7 +244,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
                 }
             ],
         }
-        decoded = self.uper.decode("Telemetry", bytes.fromhex("7fffa59a738f4000420c49669c0ffffa8c081c0009681e00116e39c7cd231524418a48c5491062923152441940404040b29ae2e1042ffe83640892284ca962854b170c1c4080e255bd5cb1ab458f57316c2603207e5c91d14e3bcc26000408c19e1f756e742603207e5c91d14e3bcc26000408c19e1f756e74fffffff07fff00fe00fe00fe00fec0640193fc000fffc000fffc000fffc000ffff008080b20101f40113880180c3500187a1200187a1205086d656f776d656f770"))
+        decoded = self.uper.decode("Telemetry", bytes.fromhex("7fffa59a738f4000420c49669c0ffffa8c081c0009681e00116e39c7cd231524418a48c5491062923152441940404040b29ae2e1042ffe83640892284ca962854b170c1c4080e255bd5cb1ab458f57316c2603207e5c91d14e3bcc26000408c19e1f756e742603207e5c91d14e3bcc26000408c19e1f756e74fffffff07ff00fe00fec0640193c000fffc000ffff008080b20101f40113880180c3500187a1200187a1205086d656f776d656f770"))
 
         self.assertDictEqual(data, decoded)
 

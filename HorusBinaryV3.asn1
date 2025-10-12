@@ -38,23 +38,15 @@ AdditionalSensors ::= SEQUENCE(SIZE(1..4)) OF AdditionalSensorType
 TemperatureSensors ::= SEQUENCE {
     internal [0] EXPLICIT INTEGER (-127..127) OPTIONAL, -- C
     external [1] EXPLICIT INTEGER (-127..127) OPTIONAL, -- C
-    other1   [2] EXPLICIT INTEGER (-127..127) OPTIONAL, -- C
-    other2   [3] EXPLICIT INTEGER (-127..127) OPTIONAL, -- C
-    other3   [4] EXPLICIT INTEGER (-127..127) OPTIONAL, -- C
-    other4   [5] EXPLICIT INTEGER (-127..127) OPTIONAL, -- C
-    other5   [6] EXPLICIT INTEGER (-127..127) OPTIONAL, -- C
-    other6   [7] EXPLICIT INTEGER (-127..127) OPTIONAL -- C
+    custom1   [2] EXPLICIT INTEGER (-127..127) OPTIONAL, -- C
+    custom2   [3] EXPLICIT INTEGER (-127..127) OPTIONAL -- C
 }
 
 MilliVoltSensors ::= SEQUENCE {
     battery  [0] EXPLICIT INTEGER (0..16383) OPTIONAL, -- millivolts
     solar    [1] EXPLICIT INTEGER (0..16383) OPTIONAL, -- millivolts
-    payload  [2] EXPLICIT INTEGER (0..16383) OPTIONAL, -- millivolts
-    other1   [3] EXPLICIT INTEGER (0..16383) OPTIONAL, -- millivolts
-    other2   [4] EXPLICIT INTEGER (0..16383) OPTIONAL, -- millivolts
-    other3   [5] EXPLICIT INTEGER (0..16383) OPTIONAL, -- millivolts
-    other4   [6] EXPLICIT INTEGER (0..16383) OPTIONAL, -- millivolts
-    other5   [7] EXPLICIT INTEGER (0..16383) OPTIONAL  -- millivolts
+    custom1  [2] EXPLICIT INTEGER (0..16383) OPTIONAL, -- millivolts
+    custom2   [3] EXPLICIT INTEGER (0..16383) OPTIONAL -- millivolts
 }
 
 Telemetry ::= SEQUENCE {
