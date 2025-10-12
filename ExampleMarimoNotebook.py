@@ -103,7 +103,7 @@ def _(mo):
 
         "safeMode": True,
         "powerSave": True,
-        "gpsLock": True
+        "gpsLock": True,
     }
     """,language="python")
     editor
@@ -153,9 +153,8 @@ def _(HorusBinaryV3, asn1tools, builder, data, drawer, mo, parser):
             self.last_frame = None
             super().__init__(*args, **kwargs)
 
-        def inspect(self):
-            frame = inspect.currentframe()
-            calling_frame=frame.f_back.f_back.f_locals
+        def inspect(self, calling_frame):
+
             try:
                 label = calling_frame['self'].type_label()
             except:
@@ -175,12 +174,10 @@ def _(HorusBinaryV3, asn1tools, builder, data, drawer, mo, parser):
                         "start": 0
                     })
 
-
-            # after_bits = self.number_of_bits
-            # print(f"{label} {current_bits}:{after_bits}")
-
-        def append_bit(self, *args, **kwargs):        
-            self.inspect()
+        def append_bit(self, *args, **kwargs):      
+            frame = inspect.currentframe()
+            calling_frame=frame.f_back.f_locals
+            self.inspect(calling_frame)
             super().append_bit(*args, **kwargs)
 
 
@@ -188,8 +185,17 @@ def _(HorusBinaryV3, asn1tools, builder, data, drawer, mo, parser):
             frame = inspect.currentframe()
             calling_frame=frame.f_back.f_locals
             if type(frame.f_back.f_locals['self']) != VizEncoder:
-                self.inspect()
+                self.inspect(calling_frame)
                 super().append_non_negative_binary_integer(*args, **kwargs)
+            else:
+                try_back = frame.f_back
+                for x in range(0,8):
+                    if type(try_back.f_locals['self']) != VizEncoder:
+                        self.inspect(try_back.f_locals)
+                        super().append_non_negative_binary_integer(*args, **kwargs)
+                        return
+                    else:
+                        try_back = try_back.f_back
 
         def as_bytearray(self, *args, **kwargs):
             if len(self.map)>0:

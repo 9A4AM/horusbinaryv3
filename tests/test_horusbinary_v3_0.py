@@ -182,6 +182,9 @@ class TestHorusBinaryV3_0(unittest.TestCase):
             "latitude": 90,
             "longitude": -180,
             "altitudeMeters": 50000,
+            "safeMode": True,
+            "powerSave":False,
+            "gpsLock": False
         }
         encoded = self.uper.encode("Telemetry",data)
         decoded = self.uper.decode("Telemetry", encoded)
@@ -244,7 +247,7 @@ class TestHorusBinaryV3_0(unittest.TestCase):
                 }
             ],
         }
-        decoded = self.uper.decode("Telemetry", bytes.fromhex("7fffa59a738f4000420c49669c0ffffa8c081c0009681e00116e39c7cd231524418a48c5491062923152441940404040b29ae2e1042ffe83640892284ca962854b170c1c4080e255bd5cb1ab458f57316c2603207e5c91d14e3bcc26000408c19e1f756e742603207e5c91d14e3bcc26000408c19e1f756e74fffffff07ff00fe00fec0640193c000fffc000ffff008080b20101f40113880180c3500187a1200187a1205086d656f776d656f770"))
+        decoded = self.uper.decode("Telemetry", bytes.fromhex("7ffd2cd39c7a000210624b34e07fffd46040e0004b40f0008b6e39c7cd231524418a48c5491062923152441940404040b29ae2e1042ffe83640892284ca962854b170c1c4080e255bd5cb1ab458f57316c2603207e5c91d14e3bcc26000408c19e1f756e742603207e5c91d14e3bcc26000408c19e1f756e74fffffff07ff00fe00fec0640193c000fffc000ffff008080b20101f40113880180c3500187a1200187a1200436b2b7bbb6b2b7bb80"))
 
         self.assertDictEqual(data, decoded)
 
@@ -271,7 +274,10 @@ class TestHorusBinaryV3_0(unittest.TestCase):
                 "milliVolts": {"battery": int(data['batt']*1000)},
                 "humidityPercentage": [data['ext_humidity']],
                 "ascentRateCentimetersPerSecond": int(data["ascent_rate"]*100),
-                "pressurehPa": int(data['ext_pressure'])
+                "pressurehPa": int(data['ext_pressure']),
+                "safeMode": True,
+                "powerSave":False,
+                "gpsLock": False
             }
             encoded = self.uper.encode("Telemetry",to_encode)
             if len(encoded) > max_length:
