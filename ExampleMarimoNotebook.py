@@ -180,6 +180,23 @@ def _(HorusBinaryV3, asn1tools, builder, data, drawer, mo, parser):
 
             if inspect.stack()[2] != self.last_frame:
                 self.last_frame=inspect.stack()[2]
+                _str = ""
+                if 'data' in calling_frame:
+                    if type(calling_frame['data']) in [str,int]:
+                        _str = str(calling_frame['data'])
+                    elif type(calling_frame['data']) in [bytes, bytearray]:
+                        _str = calling_frame['data'].hex()
+                    else:
+                        try:
+                            _str = str(len(calling_frame['data']))
+                        except:
+                            pass
+                else:
+                    try:
+                        _str = str(len(calling_frame.values()))
+                    except:
+                        pass
+                label = f"{label}\\n{_str}"
                 if len(self.map)>0:
                     self.map[-1]["end"] = self.number_of_bits-1
                     self.map.append({
@@ -244,10 +261,11 @@ def _(HorusBinaryV3, asn1tools, builder, data, drawer, mo, parser):
         bin_data = "".join([format(x,'08b') for x in output_viz_bytes])
         offset = x['start'] % 8
         end_offset = 7-(x['end'] % 8)
-        lines += f"  {x['start']}-{x['end']}: {label}\\n\\n\\n\\n\\n\\n{bin_data[offset:-end_offset]}\n"
+        lines += f"  {x['start']}-{x['end']}: {label}\\n{bin_data[offset:-end_offset]}\n"
     lines += """
     }
     """
+
 
     try:
         tree = parser.parse_string(lines)
