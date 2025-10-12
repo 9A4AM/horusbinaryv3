@@ -32,6 +32,7 @@ def _(mo):
     except:
         ASN1_DEF = open(str(mo.notebook_location() / "public" / "HorusBinaryV3.asn1"),"r").read()
     from packetdiag import parser, builder, drawer
+
     return ASN1_DEF, builder, drawer, parser
 
 
@@ -52,7 +53,7 @@ def _(ASN1_DEF, mo):
     asn1_editor = mo.ui.code_editor(value=ASN1_DEF,language="asn1",label="HorusBinaryV3.asn1", max_height=MAX_HEIGHT,min_height=MAX_HEIGHT)
 
     editor = mo.ui.code_editor("""
-    data = {
+    {
         "payloadCallsign": "VK3FUR",
         "sequenceNumber": 1234,
 
@@ -96,37 +97,55 @@ def _(ASN1_DEF, mo):
 
 @app.cell(hide_code=True)
 def _(editor, mo):
-    return_value=""
+    return_value=mo.md("")
     exec_data={}
-    try:
-        exec("data =" + editor.value,globals=exec_data)
-        data = exec_data['data']
-    except:
-        try:
-            exec("data =" + editor.value)
-        except:
-            data = {"payloadCallsign": "VK3FUR",
-        "sequenceNumber": 1234,
 
-        "timeOfDaySeconds": 9001,
-        "latitude": 123.945893903,
-        "longitude": -23.344589499,
-        "altitudeMeters": 23000}
-            return_value="""
+
+    try:
+        data = eval( editor.value)
+    except Exception as e:
+        data = {"payloadCallsign": "VK3FUR",
+    "sequenceNumber": 1234,
+
+    "timeOfDaySeconds": 9001,
+    "latitude": 123.945893903,
+    "longitude": -23.344589499,
+    "altitudeMeters": 23000}
+        return_value=mo.vstack([mo.md("""
     <p style="color:red;font-size:12pt">Error parsing encoding data. Ensure that you have a valid python dictonary. Will use demo data for the time being.</p>
-    """
-    mo.md(return_value)
+    """),mo.inspect(e)])
+    return_value
     return (data,)
 
 
-@app.cell
-def _(asn1_editor, data):
-    import asn1tools
+@app.cell(hide_code=True)
+def _(mo):
+    mo.ui.code_editor(disabled=True,value="""import asn1tools
     HorusBinaryV3 = asn1tools.compile_string(asn1_editor.value, codec="uper")
-    output = HorusBinaryV3.encode('Telemetry', data)
-    print(f"{output.hex()}")
+    output = HorusBinaryV3.encode('Telemetry', data, check_constraints=True, check_types=True)""",language="python",min_height=1)
+    return
 
+
+@app.cell
+def _(asn1_editor, data, mo):
+    cell_out=None
+    try:
+        import asn1tools
+        HorusBinaryV3 = asn1tools.compile_string(asn1_editor.value, codec="uper")
+        output = HorusBinaryV3.encode('Telemetry', data,check_constraints=True,check_types=True)
+    except Exception as e:
+        output = b''
+        cell_out = mo.inspect(e).callout("danger")
+    cell_out
     return HorusBinaryV3, asn1tools, output
+
+
+@app.cell
+def hexout(mo, output):
+    output.hex()
+    len(output)
+    mo.show_code()
+    return
 
 
 @app.cell(hide_code=True)
@@ -201,12 +220,15 @@ def _(HorusBinaryV3, asn1tools, builder, data, drawer, mo, parser):
             if len(self.map)>0:
                     self.map[-1]["end"] = self.number_of_bits-1
             return super().as_bytearray(*args, **kwargs)
+    cellout = None
 
-
-
-    encoderviz = VizEncoder()
-    HorusBinaryV3._types['Telemetry']._type.encode(data,encoderviz)
-    output_viz = encoderviz.as_bytearray()
+    try:
+        encoderviz = VizEncoder()
+        HorusBinaryV3._types['Telemetry']._type.encode(data,encoderviz)
+        output_viz = encoderviz.as_bytearray()
+    except Exception as e:
+        cellout = mo.inspect(e).callout("danger")
+        mo.stop(True, cellout)
 
     lines = """
     {
@@ -228,14 +250,19 @@ def _(HorusBinaryV3, asn1tools, builder, data, drawer, mo, parser):
     }
     """
 
-    tree = parser.parse_string(lines)
-    diagram = builder.ScreenNodeBuilder(tree)
-
-    draw = drawer.DiagramDraw("SVG", diagram.build(tree),
-                                      ignore_pil=True)
-    draw.draw()
-    import base64
-    output_64 = base64.b64encode(draw.save().encode()).decode()
+    try:
+        tree = parser.parse_string(lines)
+        diagram = builder.ScreenNodeBuilder(tree)
+    
+        draw = drawer.DiagramDraw("SVG", diagram.build(tree),
+                                          ignore_pil=True)
+        draw.draw()
+        import base64
+        output_64 = base64.b64encode(draw.save().encode()).decode()
+    
+    except Exception as e:
+        cellout = mo.inspect(e).callout("danger")
+        mo.stop(True, cellout)
     mo.accordion(items={"Click to show/hide payload layout": mo.image(src=f"data:image/svg+xml;base64,{output_64}")},lazy=False)
     return
 
@@ -254,15 +281,20 @@ def _(mo, output):
 
 
 @app.cell
-def _(HorusBinaryV3, mo, text):
-    decoded = HorusBinaryV3.decode('Telemetry', bytes.fromhex(text.value))
-    mo.show_code()
-    return (decoded,)
+def _(mo):
+    mo.ui.code_editor("""HorusBinaryV3.decode('Telemetry', bytes.fromhex(text.value), check_constraints=True)""",disabled=True,language="python",min_height=1)
+    return
 
 
 @app.cell(hide_code=True)
-def _(decoded, mo):
-    mo.json(decoded)
+def _(HorusBinaryV3, mo, text):
+    output_decoded = None
+    try:
+        decoded = HorusBinaryV3.decode('Telemetry', bytes.fromhex(text.value),check_constraints=True)
+        output_decoded = mo.json(decoded)
+    except Exception as e:
+        output_decoded = mo.inspect(e).callout("danger")
+    output_decoded
     return
 
 
