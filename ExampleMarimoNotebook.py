@@ -35,41 +35,22 @@ def _(mo):
     return ASN1_DEF, builder, drawer, parser
 
 
-@app.cell(hide_code=True)
-def _(ASN1_DEF, mo):
+@app.cell
+def _(mo):
     mo.md(
-        f"""
-    ### HorusBinaryV3 ASN.1
-    ```asn1
-    {ASN1_DEF}
-    ```
+        r"""
+    ## HorusBinaryV3 ASN.1
+    ### Importing, Compiling and Encoding with the ASN.1 codec
     """
     )
     return
 
 
-@app.cell
-def _(mo):
-    mo.md(r"""### Importing and Compiling the ASN.1 codec""")
-    return
-
-
-@app.cell
+@app.cell(hide_code=True)
 def _(ASN1_DEF, mo):
-    import asn1tools
-    HorusBinaryV3 = asn1tools.compile_string(ASN1_DEF, codec="uper")
-    mo.show_code()
-    return HorusBinaryV3, asn1tools
+    MAX_HEIGHT=400
+    asn1_editor = mo.ui.code_editor(value=ASN1_DEF,language="asn1",label="HorusBinaryV3.asn1", max_height=MAX_HEIGHT,min_height=MAX_HEIGHT)
 
-
-@app.cell
-def _(mo):
-    mo.md(r"""### Encoding""")
-    return
-
-
-@app.cell
-def _(mo):
     editor = mo.ui.code_editor("""
     data = {
         "payloadCallsign": "VK3FUR",
@@ -105,12 +86,15 @@ def _(mo):
         "powerSave": True,
         "gpsLock": True,
     }
-    """,language="python")
-    editor
-    return (editor,)
+    """,language="python",label="Data to encode", max_height=MAX_HEIGHT,min_height=MAX_HEIGHT)
 
 
-@app.cell
+    the_stack = mo.hstack([ asn1_editor.style({"width":"50%"}), editor.style({"width":"50%"})])
+    the_stack
+    return asn1_editor, editor
+
+
+@app.cell(hide_code=True)
 def _(editor):
     exec_data={}
     try:
@@ -122,11 +106,13 @@ def _(editor):
 
 
 @app.cell
-def _(HorusBinaryV3, data, mo):
+def _(asn1_editor, data, mo):
+    import asn1tools
+    HorusBinaryV3 = asn1tools.compile_string(asn1_editor.value, codec="uper")
     output = HorusBinaryV3.encode('Telemetry', data)
     print(f"{output.hex()}")
     mo.show_code()
-    return (output,)
+    return HorusBinaryV3, asn1tools, output
 
 
 @app.cell(hide_code=True)
@@ -236,7 +222,8 @@ def _(HorusBinaryV3, asn1tools, builder, data, drawer, mo, parser):
     draw.draw()
     import base64
     output_64 = base64.b64encode(draw.save().encode()).decode()
-    mo.image(src=f"data:image/svg+xml;base64,{output_64}")
+    mo.accordion(items={"Click to show/hide payload layout": mo.image(src=f"data:image/svg+xml;base64,{output_64}")},lazy=False)
+
     return
 
 
@@ -248,7 +235,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 def _(mo, output):
-    text = mo.ui.text(placeholder="Hex data 7bba....", label="Decode Telemetery Hex: ",value=output.hex())
+    text = mo.ui.text(placeholder="Hex data 7bba....", label="Telemetery to decode (in hex): ",value=output.hex(),full_width=True)
     mo.vstack([text])
     return (text,)
 
@@ -262,7 +249,7 @@ def _(HorusBinaryV3, mo, text):
 
 @app.cell(hide_code=True)
 def _(decoded, mo):
-    mo.inspect(decoded, docs=False)
+    mo.json(decoded)
     return
 
 
